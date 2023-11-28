@@ -22,7 +22,7 @@ const getSingleUser = async (
   try {
     const { id } = req.params;
 
-    const result = await User.findById(id);
+    const result = await User.findById(id).populate('items').exec();
 
     res.status(200).json({
       success: true,
@@ -41,7 +41,9 @@ const updateUser = async (req: Request, res: Response, next: NextFunction) => {
     const result = await User.findOneAndUpdate({ _id: id }, updatedData, {
       new: true,
       runValidators: true,
-    });
+    })
+      .populate('items')
+      .exec();
 
     res.status(200).json({
       success: true,

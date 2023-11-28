@@ -111,7 +111,61 @@ const getAllItems = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const getSingleItem = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+    const result = await Item.findById(id).populate('created_by');
+
+    res.status(200).json({
+      success: true,
+      message: 'item retrieved successfully!',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+const updateItem = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+
+    const result = await Item.findByIdAndUpdate({ _id: id }, req.body, {
+      new: true,
+      runValidators: true,
+    }).populate('created_by');
+
+    res.status(200).json({
+      success: true,
+      message: 'item updated successfully!',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+const deleteItem = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const result = await Item.findByIdAndDelete(id).populate('created_by');
+
+    res.status(200).json({
+      success: true,
+      message: 'item deleted successfully!',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const ItemController = {
   createItem,
   getAllItems,
+  getSingleItem,
+  updateItem,
+  deleteItem,
 };
