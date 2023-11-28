@@ -56,7 +56,7 @@ const getAllItems = async (req: Request, res: Response, next: NextFunction) => {
 
     const andConditions = [];
 
-    const itemsSearchableFields = ['name', 'created_by'];
+    const itemsSearchableFields = ['name'];
 
     if (searchTerm) {
       andConditions.push({
