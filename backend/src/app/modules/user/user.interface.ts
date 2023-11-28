@@ -6,6 +6,7 @@ export type IUser = {
   name: string;
   email: string;
   password: string;
+  items: Types.ObjectId[];
 };
 
 export type UserModel = {

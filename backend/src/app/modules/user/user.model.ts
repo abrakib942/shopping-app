@@ -19,6 +19,8 @@ const userSchema = new Schema<IUser, UserModel>(
       required: true,
       select: 0,
     },
+
+    items: [{ type: Schema.Types.ObjectId, ref: 'Item' }],
   },
   {
     timestamps: true,
