@@ -9,27 +9,31 @@ import CustomForm from "../components/CustomForm";
 import FormInput from "../components/FormInput";
 import CustomButton from "../components/CustomButton";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useUserLoginMutation } from "../redux/api/authApi";
+import { storeUserInfo } from "../utils/authService";
 
 const Login = () => {
-  //   const [userLogin, { isLoading }] = useUserLoginMutation();
+  const [userLogin, { isLoading }] = useUserLoginMutation();
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     try {
-      //   const res = await userLogin({ ...data });
+      const res = await userLogin({ ...data });
 
-      //   if (res?.data?.accessToken) {
-      //     message.success({
-      //       content: "Login successful!",
-      //       key: "login-loading",
-      //       duration: 2,
-      //     });
-      //     navigate("/");
-      //   }
+      if (res?.data?.token) {
+        message.success({
+          content: "Login successful!",
+          key: "login-loading",
+          duration: 2,
+        });
+        navigate("/");
+      }
 
-      //   if (res?.error) {
-      //     message.error(res?.error?.data?.message);
-      //   }
+      storeUserInfo({ accessToken: res?.data?.token });
+
+      if (res?.error) {
+        message.error(res?.error?.data?.message);
+      }
 
       console.log(data);
     } catch (error) {
@@ -37,9 +41,9 @@ const Login = () => {
     }
   };
 
-  //   if (isLoading) {
-  //     return <Loading />;
-  //   }
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <Row
@@ -66,7 +70,13 @@ const Login = () => {
             resolver={yupResolver(loginSchema)}
           >
             <div>
-              <FormInput name="email" type="email" size="large" label="Email" />
+              <FormInput
+                name="email"
+                type="email"
+                size="large"
+                label="Email"
+                required
+              />
             </div>
             <div
               style={{
@@ -78,6 +88,7 @@ const Login = () => {
                 type="password"
                 size="large"
                 label="Password"
+                required
               />
             </div>
             <CustomButton htmlType="submit">Login</CustomButton>

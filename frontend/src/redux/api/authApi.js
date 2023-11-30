@@ -1,10 +1,10 @@
-import { baseApi } from "./baseApi";
+import { baseApi } from "./apiSlice";
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     userSignUp: build.mutation({
       query: (data) => ({
-        url: `/auth/signup`,
+        url: "/auth/signup",
         method: "POST",
         data: data,
       }),
@@ -12,7 +12,7 @@ export const authApi = baseApi.injectEndpoints({
     }),
     userLogin: build.mutation({
       query: (data) => ({
-        url: `/auth/login`,
+        url: "/auth/login",
         method: "POST",
         data: data,
       }),

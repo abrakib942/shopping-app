@@ -6,9 +6,9 @@ const CustomButton = ({ children, onClick, ...rest }) => {
     <Button
       onClick={onClick}
       style={{
-        backgroundColor: "#FBD232",
-        borderColor: "#FBD232",
-        color: "black",
+        backgroundColor: "rgb(22,119,255)",
+        borderColor: "rgb(22,119,255)",
+        color: "white",
         fontWeight: "bold",
         textTransform: "uppercase",
       }}

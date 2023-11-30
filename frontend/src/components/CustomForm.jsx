@@ -8,7 +8,7 @@ const CustomForm = ({ children, submitHandler, defaultValues, resolver }) => {
   if (defaultValues) formConfig["defaultValues"] = defaultValues;
   if (resolver) formConfig["resolver"] = resolver;
 
-  const methods = useForm();
+  const methods = useForm(formConfig);
 
   const { handleSubmit, reset } = methods;
 

@@ -7,27 +7,30 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import FormInput from "../components/FormInput";
 import CustomButton from "../components/CustomButton";
 import signupImage from "../assets/signup.png";
+import { useUserSignUpMutation } from "../redux/api/authApi";
 
 const SignUp = () => {
-  //   const [userSignUp, { isLoading }] = useUserSignUpMutation();
+  const [userSignUp, { isLoading }] = useUserSignUpMutation();
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     try {
-      //   const response = await userSignUp({ ...data });
+      const response = await userSignUp(data);
 
-      //   if (response?.data) {
-      //     message.success({
-      //       content: "Account Created successfully!",
-      //       key: "login-loading",
-      //       duration: 2,
-      //     });
-      //     navigate("/login");
-      //   }
+      console.log("res", response);
 
-      //   if (response?.error) {
-      //     message.error(response?.error?.data?.message);
-      //   }
+      if (response?.data) {
+        message.success({
+          content: "Account Created successfully!",
+          key: "login-loading",
+          duration: 2,
+        });
+        navigate("/login");
+      }
+
+      if (response?.error) {
+        message.error(response?.error?.data?.message);
+      }
 
       console.log(data);
     } catch (error) {
@@ -35,9 +38,9 @@ const SignUp = () => {
     }
   };
 
-  //   if (isLoading) {
-  //     return <Loading />;
-  //   }
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <Row
@@ -61,10 +64,22 @@ const SignUp = () => {
             resolver={yupResolver(signUpSchema)}
           >
             <div>
-              <FormInput name="name" type="text" size="large" label="Name" />
+              <FormInput
+                name="name"
+                type="text"
+                size="large"
+                label="Name"
+                required
+              />
             </div>
             <div>
-              <FormInput name="email" type="email" size="large" label="Email" />
+              <FormInput
+                name="email"
+                type="email"
+                size="large"
+                label="Email"
+                required
+              />
             </div>
             <div
               style={{
@@ -76,6 +91,7 @@ const SignUp = () => {
                 type="password"
                 size="large"
                 label="Password"
+                required
               />
             </div>
             <CustomButton htmlType="submit">Sign UP</CustomButton>
