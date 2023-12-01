@@ -4,6 +4,8 @@ import ApiError from '../../../errors/ApiError';
 import config from '../../../config';
 import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import { Secret } from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import httpStatus from 'http-status';
 
 const signUp = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -14,6 +16,13 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
     if (isExist) {
       throw new ApiError(400, 'user already exist');
     }
+
+    const hashPassword = await bcrypt.hash(
+      user?.password,
+      Number(config.bycrypt_salt_rounds)
+    );
+
+    user.password = hashPassword;
 
     const result = await User.create(user);
 
@@ -37,11 +46,17 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
       throw new ApiError(404, 'user does not exist');
     }
 
-    if (
-      isExist.password &&
-      !(await User.isPasswordMatched(password, isExist.password))
-    ) {
-      throw new ApiError(401, 'incorrect Password');
+    if (!isExist.password) {
+      throw new ApiError(
+        httpStatus.INTERNAL_SERVER_ERROR,
+        'Password is missing'
+      );
+    }
+
+    const decriptedPassword = await bcrypt.compare(password, isExist.password);
+
+    if (isExist?.password && !decriptedPassword) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Incorrect Password');
     }
 
     //create access token & refresh token
