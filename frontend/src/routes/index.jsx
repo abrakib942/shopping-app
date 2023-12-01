@@ -3,6 +3,8 @@ import App from "../App";
 import Login from "../pages/Login";
 import SignUp from "../pages/SignUp";
 import NotFound from "../components/NotFound";
+import Items from "../pages/Dashboard/items/Items";
+import User from "../pages/Dashboard/users/User";
 
 const routes = createBrowserRouter([
   {
@@ -10,8 +12,12 @@ const routes = createBrowserRouter([
     element: <App />,
     children: [
       {
-        path: "/home",
-        element: <App />,
+        path: "/items",
+        element: <Items />,
+      },
+      {
+        path: "/users",
+        element: <User />,
       },
     ],
   },
