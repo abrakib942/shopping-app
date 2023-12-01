@@ -26,10 +26,10 @@ export const itemApi = baseApi.injectEndpoints({
       invalidatesTags: ["item"],
     }),
     updateItem: build.mutation({
-      query: (data) => ({
-        url: `/items/${data.id}`,
+      query: ({ id, data }) => ({
+        url: `/items/${id}`,
         method: "PATCH",
-        data: data.data,
+        data: data,
       }),
       invalidatesTags: ["item"],
     }),

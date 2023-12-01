@@ -3,6 +3,7 @@ import {
   useCreateItemMutation,
   useDeleteItemMutation,
   useGetAllItemsQuery,
+  useUpdateItemMutation,
 } from "../../../redux/api/itemApi";
 import { useDebounced } from "../../../utils/debounce";
 import { Button, Form, Input, Modal, message, notification } from "antd";
@@ -29,10 +30,12 @@ const Items = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [deleteModal, setDeleteModal] = useState(false);
   const [addItemModal, setAddItemModal] = useState(false);
+  const [editItemModal, setEditItemModal] = useState(false);
   const [itemId, setItemId] = useState("");
 
   const [deleteItem] = useDeleteItemMutation();
   const [createItem] = useCreateItemMutation();
+  const [updateItem] = useUpdateItemMutation();
 
   query["limit"] = size;
   query["page"] = page;
@@ -73,6 +76,7 @@ const Items = () => {
 
   const [form] = Form.useForm();
 
+  //
   const handleAdd = async () => {
     message.loading("Creating.....");
     try {
@@ -95,6 +99,33 @@ const Items = () => {
       }
     } catch (error) {
       message.error(error);
+    }
+  };
+
+  const handleEdit = async (id) => {
+    try {
+      const values = await form.validateFields();
+
+      const response = await updateItem({ id: id, data: values });
+
+      if (response?.data) {
+        notification.success({
+          message: "Success",
+          description: "Item updated successfully",
+        });
+        form.resetFields();
+        setEditItemModal(false);
+      } else {
+        notification.error({
+          message: "Error",
+          description: "Failed to update item, try again",
+        });
+      }
+    } catch (error) {
+      notification.error({
+        message: "Error",
+        description: "Failed to update item. Please try again.",
+      });
     }
   };
 
@@ -138,6 +169,10 @@ const Items = () => {
                   margin: "0px 5px",
                 }}
                 type="primary"
+                onClick={() => {
+                  setEditItemModal(true);
+                  setItemId(data);
+                }}
               >
                 <EditOutlined />
               </Button>
@@ -225,6 +260,8 @@ const Items = () => {
         showPagination={true}
       />
 
+      {/* create modal */}
+
       <Modal
         title={`Add Item`}
         open={addItemModal}
@@ -251,6 +288,38 @@ const Items = () => {
           >
             <Input size="large" readOnly />
           </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* Edit modal */}
+      <Modal
+        title={`Edit Item - ${
+          itemsData && itemsData.find((item) => item.id === itemId)?.name
+        }`}
+        open={editItemModal}
+        onCancel={() => {
+          form.resetFields();
+          setEditItemModal(false);
+        }}
+        onOk={() => handleEdit(itemId)}
+      >
+        <Form form={form} layout="vertical">
+          <Form.Item
+            label="Item Name"
+            name="name"
+            rules={[{ required: true, message: "Please enter the item name!" }]}
+          >
+            <Input size="large" />
+          </Form.Item>
+          {/* <Form.Item
+            label="Created_by"
+            name="created_by"
+            initialValue={userEmail}
+            // rules={[{ required: true, message: "Please enter the creator!" }]}
+            readOnly
+          >
+            <Input size="large" readOnly />
+          </Form.Item> */}
         </Form>
       </Modal>
 
