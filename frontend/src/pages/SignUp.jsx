@@ -2,12 +2,12 @@ import { Col, Row, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
 import CustomForm from "../components/CustomForm";
-import { signUpSchema } from "../schemas/login";
 import { yupResolver } from "@hookform/resolvers/yup";
 import FormInput from "../components/FormInput";
 import CustomButton from "../components/CustomButton";
 import signupImage from "../assets/signup.png";
 import { useUserSignUpMutation } from "../redux/api/authApi";
+import { signUpSchema } from "../schemas/yupSchemas";
 
 const SignUp = () => {
   const [userSignUp, { isLoading }] = useUserSignUpMutation();

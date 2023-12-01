@@ -4,7 +4,7 @@ import { Col, Row, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
 import loginImage from "../assets/Login.png";
-import { loginSchema } from "../schemas/login";
+import { loginSchema } from "../schemas/yupSchemas";
 import CustomForm from "../components/CustomForm";
 import FormInput from "../components/FormInput";
 import CustomButton from "../components/CustomButton";
@@ -26,7 +26,7 @@ const Login = () => {
           key: "login-loading",
           duration: 2,
         });
-        navigate("/");
+        navigate("/items");
       }
 
       storeUserInfo({ accessToken: res?.data?.token });

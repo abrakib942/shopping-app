@@ -15,6 +15,7 @@ const FormInput = ({
   validation,
   label,
   required,
+  defaultValue,
 }) => {
   const {
     control,

@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import {
+  useCreateItemMutation,
   useDeleteItemMutation,
   useGetAllItemsQuery,
 } from "../../../redux/api/itemApi";
 import { useDebounced } from "../../../utils/debounce";
-import { Button, Input, message } from "antd";
+import { Button, Form, Input, Modal, message, notification } from "antd";
 import {
   DeleteOutlined,
   EditOutlined,
@@ -16,6 +17,7 @@ import DataTable from "../../../components/DataTable";
 import CustomModal from "../../../components/CustomModal";
 import { useState } from "react";
 import ActionBar from "../../../components/ActionBar";
+import { getUserInfo } from "../../../utils/authService";
 
 const Items = () => {
   const query = {};
@@ -26,9 +28,11 @@ const Items = () => {
   const [sortOrder, setSortOrder] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [deleteModal, setDeleteModal] = useState(false);
+  const [addItemModal, setAddItemModal] = useState(false);
   const [itemId, setItemId] = useState("");
 
   const [deleteItem] = useDeleteItemMutation();
+  const [createItem] = useCreateItemMutation();
 
   query["limit"] = size;
   query["page"] = page;
@@ -46,7 +50,7 @@ const Items = () => {
   }
   const { data, isLoading } = useGetAllItemsQuery({ ...query });
 
-  console.log("data", data);
+  const { userEmail } = getUserInfo();
 
   const itemsData = data?.data.data;
   const meta = data?.data.meta;
@@ -64,6 +68,33 @@ const Items = () => {
       }
     } catch (err) {
       console.error(err.message);
+    }
+  };
+
+  const [form] = Form.useForm();
+
+  const handleAdd = async () => {
+    message.loading("Creating.....");
+    try {
+      const values = await form.validateFields();
+      const response = await createItem({ ...values });
+
+      console.log("res", response);
+
+      if (response?.data) {
+        notification.success({
+          message: "Success",
+          description: "Item Created successfully",
+        });
+        message.success("Item Created successfully");
+        form.resetFields();
+
+        setAddItemModal(false);
+      } else {
+        message.error("Failed to Create, try again");
+      }
+    } catch (error) {
+      message.error(error);
     }
   };
 
@@ -162,7 +193,13 @@ const Items = () => {
         />
         <div>
           <Link to="">
-            <CustomButton>Create</CustomButton>
+            <CustomButton
+              onClick={() => {
+                setAddItemModal(true);
+              }}
+            >
+              Create
+            </CustomButton>
           </Link>
           {(!!sortBy || !!sortOrder || !!searchTerm) && (
             <Button
@@ -187,6 +224,35 @@ const Items = () => {
         onTableChange={onTableChange}
         showPagination={true}
       />
+
+      <Modal
+        title={`Add Item`}
+        open={addItemModal}
+        onCancel={() => {
+          setAddItemModal(false);
+          form.resetFields();
+        }}
+        onOk={handleAdd}
+      >
+        <Form form={form} layout="vertical">
+          <Form.Item
+            label="Item Name"
+            name="name"
+            rules={[{ required: true, message: "Please enter the item name!" }]}
+          >
+            <Input size="large" />
+          </Form.Item>
+          <Form.Item
+            label="Created_by"
+            name="created_by"
+            initialValue={userEmail}
+            // rules={[{ required: true, message: "Please enter the creator!" }]}
+            readOnly
+          >
+            <Input size="large" readOnly />
+          </Form.Item>
+        </Form>
+      </Modal>
 
       <CustomModal
         title={`Remove Item`}
