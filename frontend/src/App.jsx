@@ -61,8 +61,8 @@ const App = () => {
           >
             <Menu
               mode="inline"
-              defaultSelectedKeys={["/items"]}
-              defaultOpenKeys={["/items"]}
+              defaultSelectedKeys={["/"]}
+              defaultOpenKeys={["/"]}
               theme="dark"
               style={{
                 height: "100%",
@@ -78,6 +78,7 @@ const App = () => {
               background: "white",
             }}
           >
+            <div className="text-lg ">Arraytics shopping app</div>
             <Outlet />
           </Content>
         </Layout>

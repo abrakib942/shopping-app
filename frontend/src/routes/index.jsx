@@ -5,6 +5,7 @@ import SignUp from "../pages/SignUp";
 import NotFound from "../components/NotFound";
 import Items from "../pages/Dashboard/items/Items";
 import User from "../pages/Dashboard/users/User";
+import PrivateRoute from "../helpers/privateRoute/PrivateRoute";
 
 const routes = createBrowserRouter([
   {
@@ -13,11 +14,19 @@ const routes = createBrowserRouter([
     children: [
       {
         path: "/items",
-        element: <Items />,
+        element: (
+          <PrivateRoute>
+            <Items />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/users",
-        element: <User />,
+        element: (
+          <PrivateRoute>
+            <User />
+          </PrivateRoute>
+        ),
       },
     ],
   },

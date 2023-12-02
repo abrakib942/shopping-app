@@ -5,8 +5,8 @@ import { axiosBaseQuery } from "../../helpers/axios/axiosBaseQuery";
 export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: axiosBaseQuery({
-    // baseUrl: "https://shopping-4qgvcjv6q-abrakib942.vercel.app/api/v1",
-    baseUrl: "http://localhost:5000/api/v1",
+    baseUrl: "https://shopping-app-opal.vercel.app/api/v1",
+    // baseUrl: "http://localhost:5000/api/v1",
   }),
   endpoints: () => ({}),
   tagTypes: ["user", "item"],
